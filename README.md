@@ -1,94 +1,94 @@
 # 🏭 Industrial IoT & OEE Monitoring Stack
 
-Bu proje; endüstriyel sensör verilerinin gerçek zamanlı takibi, veritabanı arşivlemesi ve OEE (Toplam Ekipman Verimliliği) metriklerinin otomatik hesaplanarak bir SCADA arayüzünde görselleştirilmesini sağlayan tam kapsamlı bir IIoT (Industrial Internet of Things) altyapısıdır.
+A full-stack IIoT (Industrial Internet of Things) infrastructure for real-time industrial sensor data acquisition, database archiving, and automated OEE (Overall Equipment Effectiveness) metric calculation — visualized through a modern SCADA interface.
 
 > [!IMPORTANT]
-> Sistem, modern mikroservis mimarisi kullanılarak Docker üzerinde konteynerize edilmiştir ve endüstriyel OT (Operational Technology) standartlarına uygun olarak tasarlanmıştır.
+> The system is containerized on Docker using a modern microservices architecture and is designed in compliance with industrial OT (Operational Technology) standards.
 
 ---
 
-## 🚀 Öne Çıkan Özellikler
+## 🚀 Key Features
 
-- 📡 **Real-time Data Acquisition:** MQTT protokolü üzerinden milisaniyelik gecikmeyle sensör verisi toplama.
-- 📊 **Automated OEE Calculation:** Üretim hattı verileri üzerinden Kullanılabilirlik, Performans ve Kalite metriklerinin anlık hesabı.
-- 🗄️ **Database Persistence:** Tüm sensör verilerinin PostgreSQL üzerinde zaman damgalı (Time-series) olarak saklanması.
-- 🌉 **History Data Bridge:** Veritabanındaki geçmiş verilerin SCADA grafiklerine Node-RED tabanlı bir Proxy üzerinden paketlenerek aktarılması.
-- 🖥️ **Modern SCADA Interface:** FUXA platformu üzerinde endüstriyel standartlarda dashboard tasarımı.
-
----
-
-## 🏗️ Sistem Mimarisi
-
-Sistem birbirine entegre **5 ana katmandan** oluşmaktadır:
-
-| Katman | Bileşen | Açıklama |
-|--------|---------|----------|
-| **Simulation Layer** | Node-RED | PLC/Sensör verilerini simüle eden ve MQTT üzerinden yayınlayan katman |
-| **Messaging Layer** | Mosquitto MQTT | Servisler arası haberleşmeyi sağlayan yüksek performanslı mesaj broker'ı |
-| **Application Layer** | FastAPI / Python | Verileri işleyen, veritabanına kaydeden ve OEE analizlerini gerçekleştiren backend servisi |
-| **Storage Layer** | PostgreSQL | Endüstriyel verilerin güvenli ve düzenli saklandığı ilişkisel veritabanı |
-| **Visualization Layer** | FUXA SCADA | Operatör ve mühendis panellerinin yer aldığı görselleştirme arayüzü |
+- 📡 **Real-time Data Acquisition:** Collects sensor data with millisecond latency over the MQTT protocol.
+- 📊 **Automated OEE Calculation:** Instantly calculates Availability, Performance, and Quality metrics from production line data.
+- 🗄️ **Database Persistence:** Stores all sensor data with timestamps in PostgreSQL as a time-series database.
+- 🌉 **History Data Bridge:** Delivers historical data from the database to SCADA charts via a Node-RED based proxy.
+- 🖥️ **Modern SCADA Interface:** Industrial-grade dashboard design built on the FUXA platform.
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+## 🏗️ System Architecture
 
-| Bileşen | Teknoloji | Görev |
-|---------|-----------|-------|
-| Backend | Python 3.10+, FastAPI | Veri işleme ve API yönetimi |
-| Database | PostgreSQL | Zaman serisi veri depolama |
-| Messaging | MQTT (Mosquitto) | Cihazlar arası iletişim |
-| Integration | Node-RED | Veri akış yönetimi ve Proxy |
-| Visualization | FUXA SCADA | Endüstriyel Dashboard |
-| Infrastructure | Docker, Docker Compose | Konteynerizasyon ve Orkestrasyon |
+The system consists of **5 integrated core layers**:
+
+| Layer | Component | Description |
+|-------|-----------|-------------|
+| **Simulation Layer** | Node-RED | Simulates PLC/sensor data and publishes it over MQTT |
+| **Messaging Layer** | Mosquitto MQTT | High-performance message broker handling inter-service communication |
+| **Application Layer** | FastAPI / Python | Backend service for data processing, database persistence, and OEE analysis |
+| **Storage Layer** | PostgreSQL | Relational database for secure and structured industrial data storage |
+| **Visualization Layer** | FUXA SCADA | Visualization interface hosting operator and engineer dashboards |
 
 ---
 
-## 📦 Kurulum ve Çalıştırma
+## 🛠️ Tech Stack
 
-Sistemi ayağa kaldırmak için bilgisayarınızda **Docker** ve **Docker Compose**'un yüklü olması yeterlidir.
+| Component | Technology | Role |
+|-----------|------------|------|
+| Backend | Python 3.10+, FastAPI | Data processing and API management |
+| Database | PostgreSQL | Time-series data storage |
+| Messaging | MQTT (Mosquitto) | Device-to-device communication |
+| Integration | Node-RED | Data flow management and proxy |
+| Visualization | FUXA SCADA | Industrial dashboard |
+| Infrastructure | Docker, Docker Compose | Containerization and orchestration |
 
-**1. Projeyi klonlayın:**
+---
+
+## 📦 Getting Started
+
+All you need is **Docker** and **Docker Compose** installed on your machine.
+
+**1. Clone the repository:**
 
 ```bash
-git clone https://github.com/kullaniciadi/industrial-oee-stack.git
+git clone https://github.com/username/industrial-oee-stack.git
 cd industrial-oee-stack
 ```
 
-**2. Docker konteynerlerini başlatın:**
+**2. Start the Docker containers:**
 
 ```bash
 docker compose up -d --build
 ```
 
-**3. Arayüzlere erişin:**
+**3. Access the interfaces:**
 
-| Servis | URL |
-|--------|-----|
+| Service | URL |
+|---------|-----|
 | 🌐 FUXA SCADA | http://localhost:1881 |
 | 🔄 Node-RED | http://localhost:1880 |
 | 🔌 FastAPI Docs | http://localhost:8000/docs |
 
 ---
 
-## 📂 Proje Yapısı
+## 📂 Project Structure
 
 ```
 ├── backend/
 │   ├── app/
-│   │   ├── api/          # OEE ve History API Rotaları
-│   │   ├── core/         # DB Bağlantısı ve Konfigürasyon
-│   │   ├── services/     # MQTT Listener ve İş Mantığı
-│   │   └── main.py       # Uygulama Giriş Noktası
+│   │   ├── api/          # OEE and History API routes
+│   │   ├── core/         # DB connection and configuration
+│   │   ├── services/     # MQTT listener and business logic
+│   │   └── main.py       # Application entry point
 │   └── Dockerfile
-├── mosquitto/            # MQTT Broker Konfigürasyonu
-├── docker-compose.yml    # Tüm Sistemin Orkestrasyonu
+├── mosquitto/            # MQTT broker configuration
+├── docker-compose.yml    # Full system orchestration
 └── README.md
 ```
 
 ---
 
-## 👨‍💻 Geliştirici
+## 👨‍💻 Developer
 
 **Ege Ertürk**  
-Software Engineering Student | IIoT & OT Enthusiast
+Software Engineering Student
