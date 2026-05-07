@@ -1,0 +1,5 @@
+fastapi # Web framework for building APIs
+uvicorn # ASGI server for running FastAPI applications
+paho-mqtt # MQTT client library for Python
+sqlalchemy # Database ORM for Python
+psycopg2-binary # PostgreSQL adapter for Python

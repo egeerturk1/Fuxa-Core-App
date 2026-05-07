@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # MQTT Broker: Cihazlardan gelen verileri yöneten ve ileten servis
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    restart: unless-stopped
+
+  # Node-RED: Verileri işlemek için kullanılan akış tabanlı programlama aracı
+  nodered:
+    image: nodered/node-red:latest
+    container_name: node-red-middleware
+    ports:
+      - "1880:1880"
+    volumes:
+      - nodered_data:/data
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+  # Fuxa SCADA: Verilerin görselleştirilmesi ve kontrolü için kullanılan SCADA yazılımı
+  fuxa:
+    image: frangoteam/fuxa:latest
+    container_name: fuxa-scada
+    ports:
+      - "1881:1881"
+    volumes:
+      - fuxa_data:/usr/src/app/FUXA/server/_appdata
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+  
+  # Veritabanı: Verilerin kalıcı olarak saklandığı yer
+  db:
+    image: postgres:15
+    container_name: iiot-db
+    environment:
+      POSTGRES_USER: ege_admin
+      POSTGRES_PASSWORD: iiot_password
+      POSTGRES_DB: iiot_data
+      TZ: Europe/Istanbul  # <-- Buraya eklendi
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Backend: Python FastAPI servisimiz
+  backend:
+    build: ./backend
+    container_name: iiot-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - MQTT_BROKER=mosquitto
+      - DATABASE_URL=postgresql://ege_admin:iiot_password@db/iiot_data
+      - TZ=Europe/Istanbul # <-- Buraya eklendi
+    depends_on:
+      - db
+      - mosquitto
+    restart: unless-stopped
+# --- KALICI DİSKLERİ (VOLUMES) BURADA TANIMLIYORUZ ---
+volumes:
+  db_data:
+  mosquitto_data:
+  mosquitto_log:
+  nodered_data:
+  fuxa_data:
